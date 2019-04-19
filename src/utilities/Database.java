@@ -5,10 +5,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
+//import org.apache.jdbc.EmbeddedDriver;
 
 public class Database {
 	private static Connection conn = null;
-	final String JBDC_URL = "jdbc:derby:/db/SavingsTrackerDb;";
+	final String JBDC_URL = "jdbc:derby:SavingsTrackerDb;";
 	
 	private static ResultSet executeQuery(String query)
 	{
@@ -36,6 +38,8 @@ public class Database {
 		try
 		{
             //Get a connection
+			Properties p = System.getProperties();
+			p.setProperty("derby.system.home", "C:\\derbyDb");
 			conn = DriverManager.getConnection(JBDC_URL);
 						
 			// this is how you check to make sure connection happened
