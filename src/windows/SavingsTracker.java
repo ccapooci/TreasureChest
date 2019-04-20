@@ -16,6 +16,7 @@ import javax.swing.JTabbedPane;
 
 import java.awt.GridBagLayout;
 import bars.OverviewBar;
+import depositSections.CreateDepositSection;
 import interfaces.GuiComponent;
 import itemColumns.ItemColumn;
 import itemColumns.PercentageItemColumn;
@@ -145,7 +146,8 @@ public class SavingsTracker implements MouseListener, GuiComponent {
 	
 	private void createDepositTab()
 	{
-		
+		CreateDepositSection section = new CreateDepositSection(this);
+		depositPanel.add(section);
 	}
 	
 	private void initializeInterface()
