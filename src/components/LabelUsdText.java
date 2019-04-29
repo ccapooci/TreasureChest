@@ -48,4 +48,9 @@ public class LabelUsdText extends JPanel {
 		label.setText(labelStr);
 	}
 	
+	public double getValue()
+	{
+		return text.getValue();
+	}
+	
 }

@@ -17,12 +17,13 @@ import javax.swing.JTabbedPane;
 import java.awt.GridBagLayout;
 import bars.OverviewBar;
 import depositSections.CreateDepositSection;
+import depositSections.DepositTable;
 import interfaces.GuiComponent;
 import itemColumns.ItemColumn;
 import itemColumns.PercentageItemColumn;
 import utilities.Database;
 
-public class SavingsTracker implements MouseListener, GuiComponent {
+public class SavingsTracker implements GuiComponent {
 	private JMenuItem depositMenuItem;
 	private JMenu    addMenu;
 	private JMenuBar menuBar;
@@ -37,6 +38,8 @@ public class SavingsTracker implements MouseListener, GuiComponent {
 	private JPanel itemPanel = null;
 	private JPanel depositPanel = null;
 	private JTabbedPane tabPane = null;
+	private CreateDepositSection depSection = null;
+	private DepositTable table = null;
 	/**
 	 * Launch the application.
 	 */
@@ -146,8 +149,33 @@ public class SavingsTracker implements MouseListener, GuiComponent {
 	
 	private void createDepositTab()
 	{
-		CreateDepositSection section = new CreateDepositSection(this);
-		depositPanel.add(section);
+		depositPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		depSection = new CreateDepositSection(this);
+		table = new DepositTable();
+		
+		// create the layout of the pieces on this panel
+        // then ask for the name of the deposit
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.weighty = 0.5;
+        depositPanel.add(depSection, gbc);
+		
+     // create the layout of the pieces on this panel
+        // then ask for the name of the deposit
+        gbc.gridheight = 1;
+        gbc.gridwidth = 5;
+        gbc.gridx = 7;
+        gbc.gridy = 1;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1;
+        gbc.weighty = 0.5;
+        depositPanel.add(table, gbc);
+		
 	}
 	
 	private void initializeInterface()
@@ -178,33 +206,14 @@ public class SavingsTracker implements MouseListener, GuiComponent {
 		ovrvwBar.refresh();
 	}
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	public void addDeposit(String   depName,
+			               double   totDep,
+						   double[] itemDep,
+						   int      numItems,
+						   String   duration,
+						   String   nextOcc) 
+	{
+		table.addDeposit(depName, totDep, itemDep, numItems, duration, nextOcc);
 	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}	
+	
 }
