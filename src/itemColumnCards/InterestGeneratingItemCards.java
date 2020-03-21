@@ -9,6 +9,10 @@ import columnSections.FundsAccumulatedSection;
 import columnSections.DepositSection;
 
 public class InterestGeneratingItemCards extends ItemColumnCard {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4349114432624993647L;
 	DepositSection depSect;
 	FundsAccumulatedSection faSect;
 	SavingsTracker masterTracker;
@@ -87,5 +91,9 @@ public class InterestGeneratingItemCards extends ItemColumnCard {
 		db.update("update intcolumns set addint=" + faSect.getAmount() + " where id=" + dataIndex);
 	}
 
+	public void addToItem(double value)
+	{
+		depSect.addValue(value);
+	}
 	
 }

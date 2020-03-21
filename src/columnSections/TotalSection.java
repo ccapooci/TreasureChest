@@ -1,21 +1,23 @@
 package columnSections;
 
-import javax.swing.JPanel;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public class TotalSection extends JPanel implements GuiComponent, MouseListener{
+/*    TotalSection
+ *    Currently not in use
+ */
+public class TotalSection extends SavTrackPanel implements GuiComponent{
 	SavingsTracker masterTracker;
 	/**
 	 * Create the panel.
 	 */
 	public TotalSection(SavingsTracker savTrack) {
+		super(savTrack);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setSize(200, 150);
 
@@ -29,36 +31,6 @@ public class TotalSection extends JPanel implements GuiComponent, MouseListener{
 		lblTotal.setAlignmentX(CENTER_ALIGNMENT);
 		add(lblTotalSaved);
 
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

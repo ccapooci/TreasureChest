@@ -2,35 +2,34 @@ package components;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.Locale;
-import javax.swing.JFormattedTextField;
-import javax.swing.JPanel;
-import interfaces.GuiComponent;
+import javax.swing.JTextField;
+
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 import javax.swing.JLabel;
 
-public class UsdFormattedTextField extends JPanel implements MouseListener, GuiComponent{
-	private Currency currency;
-	private NumberFormat dollarValueFormat;
-	private JFormattedTextField txtTotalAccountBalance;
-	private JLabel dollarSign;
-	private boolean firstPress;
-	private SavingsTracker masterTracker;
-	/**
-	 * Create the panel.
+/*   UsdFormattedTextField
+ * 	 TextField formatted for the USD.
+ */
+public class UsdFormattedTextField extends SavTrackPanel{
+	private JTextField textField; // the text field that holds the usd value
+	private JLabel dollarSign;    // a dollar positioned next to the value
+	private SavingsTracker masterTracker; // highest level component
+
+	/*  Constructor
+	 *  Creates the components in the UsdFormattedTextField and 
+	 *  arranges them.  Puts the dollar sign to the left of the
+	 *  USD formatted numerical value.
 	 */
 	public UsdFormattedTextField(SavingsTracker savTrack) {
+		super(savTrack);
+		// constraints used to lay out the components
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		// the layout of the components
 		setLayout(new GridBagLayout());
-		
+		// save the tracker
 		masterTracker = savTrack;
-		
-		firstPress = true;
 		
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -43,15 +42,6 @@ public class UsdFormattedTextField extends JPanel implements MouseListener, GuiC
 		dollarSign.setText("$");
 		add(dollarSign,gbc);
 		
-		// use the set the text field layout
-		currency = Currency.getInstance(new Locale("en", "US"));
-		
-		// formatting for the text field
-		// 2 values after the decimal
-		dollarValueFormat = NumberFormat.getNumberInstance();
-		dollarValueFormat.setMaximumFractionDigits(2);
-		dollarValueFormat.setMinimumFractionDigits(2);
-		dollarValueFormat.setCurrency(currency);
 		
         gbc.gridheight = 1;
         gbc.gridx = 1;
@@ -61,27 +51,38 @@ public class UsdFormattedTextField extends JPanel implements MouseListener, GuiC
         gbc.weighty = 0.5;
 		
 		// create the formatted text field
-		txtTotalAccountBalance = new JFormattedTextField(dollarValueFormat);
-		txtTotalAccountBalance.setText("0.00");
-		add(txtTotalAccountBalance, gbc);
-		txtTotalAccountBalance.setColumns(25);
+        textField = new JTextField();
+        textField.setText("0.00");
+		add(textField, gbc);
+		textField.setColumns(25);
 
-		txtTotalAccountBalance.addMouseListener(this);
-		addMouseListener(this);
-	}
-	
-	public void refresh()
-	{
 	}
 	
 	public void set(double totalValue)
 	{
-		txtTotalAccountBalance.setText(Double.toString(totalValue));
+		String valStr = Double.toString(totalValue);
+		
+		if(!valStr.contains("."))
+		{
+			valStr = valStr + ".00";
+		}
+		else
+		{
+			String[] splits = null;
+			splits = valStr.split("\\.");
+			
+			if(splits[1].length() == 1)
+			{
+				valStr = valStr + "0";
+			}
+		}
+		
+		textField.setText(valStr);
 	}
 	
 	public double getValue()
 	{
-		String amountText = txtTotalAccountBalance.getText();
+		String amountText = textField.getText();
 		double amountReturn = 0;
 		
 		if(amountText != "")
@@ -109,37 +110,4 @@ public class UsdFormattedTextField extends JPanel implements MouseListener, GuiC
 		
 		return amountReturn;
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-		masterTracker.refresh();
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

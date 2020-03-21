@@ -1,12 +1,12 @@
 package itemColumns;
 
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 import java.awt.CardLayout;
 import itemColumnCards.InterestGeneratingItemCards;
 import itemColumnCards.ItemColumnCard;
 import itemColumnCards.StaticTotalCard;
-import columnSections.EditSection;
+import parentClasses.SavTrackPanel;
+
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -16,7 +16,7 @@ import windows.SavingsTracker;
 import utilities.Database;
 
 public class PercentageItemColumn extends ItemColumn implements ItemListener {
-	private JPanel cards;
+	private SavTrackPanel cards;
 	private JComboBox<String> colTypeComboBox;
 	private ItemColumnCard[] itemLayouts;
 	private int currentItem;
@@ -47,18 +47,16 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
 		GridBagLayout gridBagLayout = new GridBagLayout();  // layout of the column
 		GridBagConstraints gbc = new GridBagConstraints();  // constraints of the layout
         String currentCard = "";
-        double intVal = 0;
-        double totVal = 0;
-
+        
         key = primaryKey;
         
 		comboBoxStrings = new String[2];
 		comboBoxStrings[CardTypes.NORMAL.value()] = "Normal";  // the strings used for the combo box
 		comboBoxStrings[CardTypes.STATIC.value()] = "Static";
-        EditSection edit = new EditSection(comboBoxStrings, savingsTrack); // the edit section of the column
+        //EditSection edit = new EditSection(comboBoxStrings, savingsTrack); // the edit section of the column
 
         db = data;
-        colTypeComboBox = edit.getColTypeComboBox(); // get the combo box from the edit section
+        //colTypeComboBox = edit.getColTypeComboBox(); // get the combo box from the edit section
         
 		setLayout(gridBagLayout);
 		
@@ -72,11 +70,12 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
 		
 		
 		 //Create the panel that contains the "cards".
-        cards = new JPanel(new CardLayout());
+        cards = new SavTrackPanel(new CardLayout());
         cards.add(itemLayouts[CardTypes.NORMAL.value()], comboBoxStrings[CardTypes.NORMAL.value()]);
         cards.add(itemLayouts[CardTypes.STATIC.value()], comboBoxStrings[CardTypes.STATIC.value()]);
         
         // show the correct card depending on the sql results
+        /*
         if(currentCard.equals("NORMAL"))
         {
             CardLayout cl = (CardLayout)(cards.getLayout());
@@ -92,6 +91,11 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
             colTypeComboBox.setSelectedIndex(CardTypes.STATIC.value());
             currentItem = CardTypes.STATIC.value();
         }
+        */
+        
+        CardLayout cl = (CardLayout)(cards.getLayout());
+        cl.show(cards, "Static");
+        currentItem = CardTypes.STATIC.value();
         
         // create the layout of the pieces on this panel
         // top panel containing the cards
@@ -103,7 +107,9 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
         gbc.weighty = 0.5;
         add(cards, gbc);
         
+        
         // the edit section
+        /*
         colTypeComboBox.addItemListener(this);
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -112,7 +118,7 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
         add(edit, gbc);
-        
+        */
 	}
 
 	public void itemStateChanged(ItemEvent evt) {
@@ -145,6 +151,12 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
      	db.update(sqlStatement);
      	
 		itemLayouts[currentItem].saveData();
+	}
+
+	@Override
+	public void addToItem(double value) {
+		// TODO Auto-generated method stub
+		itemLayouts[currentItem].addToItem(value);
 	}
 	
 }

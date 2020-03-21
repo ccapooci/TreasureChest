@@ -3,111 +3,101 @@ package barSections;
 import barSections.TotalAccountBalanceSection;
 import barSections.UnusedBalanceSection;
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import utilities.Database;
 import windows.SavingsTracker;
-import barSections.InterestSection;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JPanel;
-
-
-public class AccountInfoBarSection extends JPanel implements MouseListener, GuiComponent{
-	private TotalAccountBalanceSection acntBalSect = null;
-	private UnusedBalanceSection unusedBalSect = null;
-	private InterestSection intSect = null;
-	private SavingsTracker masterTracker = null;
-	private Database db = null;
-	private int dbId = 0;
-	private String totBalStr = null;
-	private double totBal=0;
-	private double intVal = 0;
-	private String intValStr = null;
-	private String intType = null;
-	private final int DEFAULT_INDEX = 1;
+/*  AccountInfoBarSection
+ *  
+ *  A portion of the Overview Bar that holds the data for the 
+ *  total amount of funds in the account. It also holds the amount 
+ *  of funds that are unused. It holds the TotalAccountBalanceSection
+ *  and UnusedBalanceSection.  
+ */
+public class AccountInfoBarSection extends SavTrackPanel implements GuiComponent{
+	
 	/**
-	 * Create the panel.
+	 * 
+	 */
+	private static final long serialVersionUID = 4453730560859606181L;
+	
+	private TotalAccountBalanceSection acntBalSect = null; // section of the bar
+	private UnusedBalanceSection unusedBalSect = null;     // section of the bar
+	//private InterestSection intSect = null;              // future section hopefully
+	private Database db = null;                            // the database
+	private int dbId = 0;                                  // ID where the account data is stored
+	private String totBalStr = null;                       // the total balance as a String
+	private double totBal=0;                               // the total balance as double
+	private final int DEFAULT_INDEX = 1;                   // value that the database takes that doesn't change
+	
+	/*  Constructor
+	 *  Takes all of the components in the AccountInfoBar and organize
+	 *  them.
+	 *  	savingsTracker: top level component that handles all data transfer.
+	 *  	Database:       interacts with the database to retrieve data
+	 *  	dataId:         id used to retrieve data from the database
+	 *  	amountUsed:     the initial amount that funds accounted for
 	 */
 	public AccountInfoBarSection(SavingsTracker savingsTracker,
 								 Database       data,
 								 int            dataId,
 								 double         amountUsed) {
+		super(savingsTracker);
+		// save class data
 		db = data;
 		dbId = dataId;
 		
+		// retrieve total account balance data
 		totBalStr = db.queryString("select totbalance from accountinfo where id="+dataId, DEFAULT_INDEX);
 		totBal = Double.parseDouble(totBalStr);
-		
-		intValStr = db.queryString("select intrate from accountinfo where id="+dataId, DEFAULT_INDEX);
-        intVal = Double.parseDouble(intValStr);
-		
-		intType = db.queryString("select inttype from accountinfo where id="+dataId, DEFAULT_INDEX);
-		
+				
 		// create the sections of the bar
 		acntBalSect = new TotalAccountBalanceSection(savingsTracker, totBal);
 		unusedBalSect = new UnusedBalanceSection(savingsTracker, totBal-amountUsed);
-		intSect = new InterestSection(savingsTracker, intType, intVal);
 		
 		// add the sections to the bar
 		add(acntBalSect);
 		add(unusedBalSect);
-		add(intSect);
 	}
 	
+	/*  refresh
+	 *  Refreshes the data and displays of the account info section.
+	 */
 	public void refresh()
 	{	
+		// refresh the account balance info displays and information
 		acntBalSect.refresh();
 		unusedBalSect.refresh();
-		intSect.refresh();
 	}
 	
+	/*   saveData 
+	 *   Save the data that is stored in this section of the 
+	 *   user interface. 
+	 */
 	public void saveData() {
-		db.update("update accountinfo set inttype = '" + intSect.getIntType() 
-				  + "' where id=" + dbId);
-		
-		// save interest into database
-		db.update("update accountinfo set intrate = " + intSect.getInterest() 
-				  + " where id=" + dbId);
-		
-		// save total value into database
+		// save total account value into the database
 		db.update("update accountinfo set totbalance = " + acntBalSect.getTotalAccountValue() 
 				  + " where id=" + dbId);
 	}
+	
+	/*   setUsed
+	 *   Set the value amount data that is considered "used" by
+	 *   all of the item in the item section.
+	 *   	used: the amount of funds in use by all the items
+	 */
 	public void setUsed(double used)
 	{
+		// calculate how much of the funds were used
+		// set it in the unused balance section.
 		unusedBalSect.setUnusedBalance(acntBalSect.getTotalAccountValue() - used);
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
+	
+	/*   addFunds
+	 *   Add funds to the total account balance. 
+	 *   	additionalFunds: the additional funds to be added into the account
+	 */
+	public void addFunds(double additionalFunds)
+	{
+		acntBalSect.setTotalAccountValue(acntBalSect.getTotalAccountValue() + additionalFunds);
 	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
 }

@@ -8,22 +8,26 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import components.DateSelector;
 import components.LabelUsdText;
 import components.UsdFormattedLabel;
 import components.UsdFormattedTextField;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public class CreateDepositSection extends JPanel {
+public class CreateDepositSection extends SavTrackPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1733814702733895305L;
 	private SavingsTracker savingTrack = null;
 	private UsdFormattedLabel leftoverUsd = null;
 	private LabelUsdText items[] = null;
 	private JTextField nameText = null;
 	private UsdFormattedTextField totDepText = null;
-	private	JComboBox recurrence = null;
+	private	JComboBox<String> recurrence = null;
 	private JButton add = null;
 	private String recurrOption[] = null;
 	private DateSelector dateSel = null;
@@ -32,6 +36,7 @@ public class CreateDepositSection extends JPanel {
 	 */
 	public CreateDepositSection(SavingsTracker savTrack) 
 	{
+		super(savTrack);
 		// JLabels
 		JLabel createDeposit = new JLabel("Create a Deposit");
 		items = new LabelUsdText[6];
@@ -39,7 +44,7 @@ public class CreateDepositSection extends JPanel {
 		JLabel totDeposit = new JLabel("Total Deposit");
 		JLabel leftover = new JLabel("Leftover");
 		JLabel nxtOcc = new JLabel("Next Occurrence");
-		dateSel = new DateSelector();
+		dateSel = new DateSelector(savTrack);
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();  // layout of the column
 		GridBagConstraints gbc = new GridBagConstraints();  // constraints of the layout
@@ -73,7 +78,7 @@ public class CreateDepositSection extends JPanel {
         gbc.weighty = 0.5;
         add(createDeposit, gbc);
 		
-        JPanel depositName = new JPanel();
+        SavTrackPanel depositName = new SavTrackPanel(savTrack);
         depositName.setLayout(new GridBagLayout());
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -102,7 +107,7 @@ public class CreateDepositSection extends JPanel {
         gbc.weighty = 0.5;
         add(depositName, gbc);
         
-        JPanel totalDepPan = new JPanel();
+        SavTrackPanel totalDepPan = new SavTrackPanel(savTrack);
         totalDepPan.setLayout(new GridBagLayout());
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
@@ -132,7 +137,7 @@ public class CreateDepositSection extends JPanel {
         add(totalDepPan, gbc);
 		
         
-        JPanel leftoverPan = new JPanel();
+        SavTrackPanel leftoverPan = new SavTrackPanel(savTrack);
         leftoverPan.setLayout(new GridBagLayout());
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -200,6 +205,8 @@ public class CreateDepositSection extends JPanel {
         gbc.weighty = 0.5;
         add(dateSel, gbc);
         
+        dateSel.setVisible(false);
+        
         // create the layout of the pieces on this panel
         // top panel containing the cards
         gbc.gridheight = 1;
@@ -217,24 +224,55 @@ public class CreateDepositSection extends JPanel {
             public void actionPerformed(ActionEvent e) {
             	double itDeps[] = new double[6];
             	int i = 0;
+            	String recurr = (String)recurrence.getSelectedItem();
+            	
             	for(LabelUsdText item : items)
             	{
             		itDeps[i] = item.getValue();
             		i++;
             	}
             	
-            	savingTrack.addDeposit(nameText.getText(),
-            			totDepText.getValue(),
-            			itDeps,
-            			i,
-            			(String)recurrence.getSelectedItem(),
-            			dateSel.getDate());
+            	if(recurr.equals("One Time"))
+            	{
+            		savingTrack.addToItems(totDepText.getValue(), itDeps, 6);
+            	}
+            	else
+            	{
+            		savingTrack.addDeposit(nameText.getText(),
+                			totDepText.getValue(),
+                			itDeps,
+                			i,
+                			(String)recurrence.getSelectedItem(),
+                			dateSel.getDate());
+            	}
             }
 
 	    });
         
-        
-        
+        recurrence.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+                String selItem = (String)recurrence.getSelectedItem();
+            	if(selItem.equals(recurrOption[0]))
+            	{
+            		dateSel.setVisible(false);
+            	}
+            	else
+            	{
+            		dateSel.setVisible(true);
+            	}
+            }
+        });            
 	}
 
+	public void refresh()
+	{
+		double leftover = totDepText.getValue();
+
+		for(LabelUsdText item : items)
+		{
+			leftover -= item.getValue();
+		}
+		
+		leftoverUsd.setValue(leftover);
+	}
 }

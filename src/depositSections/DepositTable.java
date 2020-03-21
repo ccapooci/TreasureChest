@@ -2,31 +2,101 @@ package depositSections;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class DepositTable extends JPanel {
+import parentClasses.SavTrackPanel;
+import utilities.CalendarDate;
+import utilities.Database;
+import windows.SavingsTracker;
+
+public class DepositTable extends SavTrackPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4934696423038674260L;
 	JScrollPane scroll = null;
 	JTable depTable = null;
-	String[] colNames = {"Deposit Name", "Total Deposit", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Next Deposit", "Delete?"};
+	String[] colNames = {"ID", "Deposit Name", "Total Deposit", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Next Deposit", "Delete?"};
 	JButton delete = null;
 	DefaultTableModel model = null;
+	long id;
+	int numDep;
+	Database db = null;
+	LocalDate currentDate = null;
+	String occ = null;
 	/**
 	 * Create the panel.
 	 */
-	public DepositTable() {
+	public DepositTable(SavingsTracker savTrack,
+						Database data) {
+		super(savTrack);
+		
+		int numDeps =0;
 		GridBagConstraints gbc = new GridBagConstraints();
-		String[][] noData = {};
+		db = data;
 		model = new DefaultTableModel();
-		depTable = new JTable(model); 
-		scroll = new JScrollPane(depTable);
+		String idVal = data.queryString("SELECT NUMID FROM DEPOSITSINFO WHERE ID=0", 1);
+		String numDepStr = data.queryString("SELECT NUMDEP FROM DEPOSITSINFO WHERE ID=0", 1);
+		id = Long.parseLong(idVal);
+		numDep = Integer.parseInt(numDepStr);
+		CalendarDate today = null;
+		CalendarDate depDate = null;
+		ResultSet ids = null;
+		int missedDeps = 0;
+		double[] addDepositData = new double[6];
+		String newDate = null;
+		depTable = new JTable(model) {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Class getColumnClass(int column) {
+                switch (column) {
+                    case 0:
+                        return String.class;
+                    case 1:
+                        return String.class;
+                    case 2:
+                        return String.class;
+                    case 3:
+                        return String.class;
+                    case 4:
+                        return String.class;
+                    case 5:
+                        return String.class;
+                    case 6:
+                        return String.class;
+                    case 7:
+                        return String.class;
+                    case 8:
+                        return String.class;
+                    default:
+                        return Boolean.class;
+                }
+            }
+        }; 
+        // todo set the ID from data in the Database
+        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    	LocalDate localDate = LocalDate.now();
+    	today = new CalendarDate(getMonth(localDate.toString()),
+    							 getDay(localDate.toString()),
+    							 getYear(localDate.toString()));
+    	
+        scroll = new JScrollPane(depTable);
 		depTable.setFillsViewportHeight(true);
 		delete = new JButton("Delete Deposit");		
 		
+		model.addColumn("ID");
 		model.addColumn("Deposit Name");
 		model.addColumn("Total Deposit");
 		model.addColumn("Item 1");
@@ -38,8 +108,78 @@ public class DepositTable extends JPanel {
 		model.addColumn("Next Deposit");
 		model.addColumn("Delete?");
 		
+		depTable.removeColumn(depTable.getColumn("ID"));
+		numDeps = Integer.parseInt(db.queryString("SELECT NUMDEP FROM DEPOSITSINFO", 1));
 		
-		GridBagLayout gbl = new GridBagLayout();
+		long tempId =0;
+		String tempName = null;
+		double tempDep = 0;
+		double itemVal[] = new double[6];
+		String nxtDep = null;
+		if(numDeps > 0)
+		{
+			boolean first = true;
+			ids = db.queryMult("SELECT ID FROM DEPOSITS");
+			for(int i=0; i<numDeps; i++)
+			{
+				if(!first)
+				{
+					try {
+						ids.next();
+					}catch (SQLException e) {
+						System.out.println("Failure on next in DepTable.");
+						e.printStackTrace();
+						// TODO Auto-generated catch block
+					}
+					
+					
+				}
+				first = false;
+				try {
+					tempId = ids.getLong(1);
+				}
+				catch(SQLException e)
+				{
+					System.out.println("Failure on getLong in DepTable.");
+					e.printStackTrace();
+				}
+				
+				tempName = db.queryString("SELECT NAME FROM DEPOSITS WHERE ID="+tempId, 1);
+				tempDep = Double.parseDouble(db.queryString("SELECT TOTDEP FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[0] = Double.parseDouble(db.queryString("SELECT ITEM1 FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[1] = Double.parseDouble(db.queryString("SELECT ITEM2 FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[2] = Double.parseDouble(db.queryString("SELECT ITEM3 FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[3] = Double.parseDouble(db.queryString("SELECT ITEM4 FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[4] = Double.parseDouble(db.queryString("SELECT ITEM5 FROM DEPOSITS WHERE ID="+tempId, 1));
+				itemVal[5] = Double.parseDouble(db.queryString("SELECT ITEM6 FROM DEPOSITS WHERE ID="+tempId, 1));
+				nxtDep = db.queryString("SELECT NEXTOCC FROM DEPOSITS WHERE ID="+tempId, 1);
+				occ = db.queryString("SELECT DURATION FROM DEPOSITS WHERE ID=" + tempId, 1);
+				
+				depDate = new CalendarDate(getMonth(nxtDep), getDay(nxtDep), getYear(nxtDep));
+				
+				missedDeps = today.howGreater(depDate, occ);
+				
+				if(missedDeps > 0)
+				{
+					int j = 0;
+					for(double val : itemVal)
+					{
+						addDepositData[j] = val * missedDeps;
+						j++;
+					}
+				
+					savTrack.addToItems(tempDep, addDepositData, 6);
+					depDate.add(missedDeps, occ);
+
+					newDate = (depDate.getMonth()+"-"+depDate.getDay()+"-"+depDate.getYear());
+
+					db.update("UPDATE DEPOSITS SET NEXTOCC=" + newDate +" WHERE ID=" + tempId);
+				}
+				Object[] row = {tempId, tempName, tempDep, itemVal[0],itemVal[1],itemVal[2],itemVal[3],itemVal[4],itemVal[5],newDate, false};
+				model.addRow(row);
+			}
+		}		
+//		/GridBagLayout gbl = new GridBagLayout();
 		
 		setLayout(new GridBagLayout());
 		
@@ -58,12 +198,64 @@ public class DepositTable extends JPanel {
 	    gbc.weightx = 0.5;
 	    gbc.weighty = 0.5;
 	    add(delete, gbc);
+	    
+	    
+	    
+	    delete.addActionListener(new ActionListener() {
+	    	@Override
+            public void actionPerformed(ActionEvent e) {
+                for(int i = 0; i < model.getRowCount(); i++)
+                {
+                	// column indicates if the user wants to delete it
+                	if((boolean)(model.getValueAt(i, 10)))
+                	{
+                		removeDeposit(i);
+                	}
+                }
+            }
+	    });
+	    
+	    
 	}
 	
 	public void addDeposit(String depName, double totDep, double[] itemDep, int numItems, String duration, String nextOcc)
 	{
-		Object[] row = {depName, totDep, itemDep[0],itemDep[1],itemDep[2],itemDep[3],itemDep[4],itemDep[5],nextOcc, false};
+		numDep++;
+		Object[] row = {id, depName, totDep, itemDep[0],itemDep[1],itemDep[2],itemDep[3],itemDep[4],itemDep[5],nextOcc, false};
 		model.addRow(row);
+		
+		db.update("INSERT INTO DEPOSITS VALUES (" + id + ", '" + depName + "',"+ totDep + ", " + itemDep[0] + ", " + itemDep[1] + ", " + itemDep[2] + ", " + itemDep[3] + ", " + itemDep[4] + ", " + itemDep[5] + ", '"+ duration +"', '" + nextOcc + "')");
+		db.update("UPDATE DEPOSITSINFO SET NUMDEP=" + numDep);
+		id++;
+		db.update("UPDATE DEPOSITSINFO SET NUMID=" + id);
 	}
-
+	
+	private void removeDeposit(int row)
+	{
+		numDep--;
+		db.update("DELETE FROM DEPOSITS WHERE ID="+model.getValueAt(row, 0));
+		model.removeRow(row);
+		db.update("UPDATE DEPOSITSINFO SET NUMDEP=" + numDep);
+	}
+	
+	private int getMonth(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[0]);
+	}
+	
+	private int getDay(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[1]);
+	}
+	
+	private int getYear(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[2]);
+	}
 }

@@ -1,93 +1,85 @@
 package columnSections;
 
-import javax.swing.JPanel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 import components.UsdFormattedTextField;
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public class DepositSection extends JPanel implements MouseListener, GuiComponent{
-	private UsdFormattedTextField txtDeposit;
-	private SavingsTracker masterTracker;
+/*   DepositSection
+ *   Holds the amount funds that the item contains.
+ */
+public class DepositSection extends SavTrackPanel implements GuiComponent{
 	/**
-	 * Create the panel.
+	 * 
+	 */
+	private static final long serialVersionUID = -629244649309049524L;
+	private UsdFormattedTextField txtDeposit; // holds the value of the item
+	
+	/*   DepositSection
+	 *   Creates and arranges the components of the section.
+	 *   	savTrack:  the highest level component
+	 *   	initValue: the initial funds for this deposit section.
 	 */
 	public DepositSection(SavingsTracker savTrack,
-					      Double         initValue) {
+					      double         initValue) {
+		super(savTrack);
+		
+		// used to arrange the components
 		GridBagConstraints gbc = new GridBagConstraints();
+		JLabel lblDeposit = new JLabel("Deposit");
+		
 		setLayout(new GridBagLayout());
-		masterTracker = savTrack;
-        // create the layout of the pieces on this panel
-        // top panel containing the cards
-        gbc.gridheight = 1;
+		
+		// create the layout of the pieces on this panel
+        // place the label on the section 
+		gbc.gridheight = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
-    	
-		JLabel lblDeposit = new JLabel("Deposit");
-		lblDeposit.setAlignmentX(CENTER_ALIGNMENT);
+    	lblDeposit.setAlignmentX(CENTER_ALIGNMENT);
 		add(lblDeposit, gbc);
 		
-	    // create the layout of the pieces on this panel
-        // top panel containing the cards
+	    // place the text field on the right
+		// and set it up
         gbc.gridheight = 1;
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.5;
         gbc.weighty = 0.5;
-   		
-		txtDeposit = new UsdFormattedTextField(savTrack);
+   		txtDeposit = new UsdFormattedTextField(savTrack);
 		txtDeposit.setAlignmentX(CENTER_ALIGNMENT);
 		add(txtDeposit, gbc);
 		txtDeposit.set(initValue);
 	}
 
+	/*   getAmount
+	 *   Return the amount of funds that is in the deposit section.
+	 */
 	public double getAmount()
 	{
 		return txtDeposit.getValue();
 	}
 	
+	/*   addValue
+	 *   Add additional funds to the section. 
+	 */
+	public void addValue(double value)
+	{
+		txtDeposit.set(txtDeposit.getValue() + value);
+	}
+	
+	/*   refresh
+	 *   Set the value of the section again.
+	 */
 	public void refresh()
 	{
 		
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

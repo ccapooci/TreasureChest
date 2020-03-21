@@ -1,17 +1,10 @@
 package windows;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.GridBagConstraints;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import java.awt.GridBagLayout;
@@ -21,12 +14,11 @@ import depositSections.DepositTable;
 import interfaces.GuiComponent;
 import itemColumns.ItemColumn;
 import itemColumns.PercentageItemColumn;
+import parentClasses.SavTrackPanel;
+import threads.RefreshThread;
 import utilities.Database;
 
 public class SavingsTracker implements GuiComponent {
-	private JMenuItem depositMenuItem;
-	private JMenu    addMenu;
-	private JMenuBar menuBar;
 	private JLabel debugLabel;
 	private JFrame frame;
 	private static ItemColumn[] itemColumns;
@@ -35,8 +27,8 @@ public class SavingsTracker implements GuiComponent {
 	private int numRefresh;
 	private static Database db = null;
 	private final int ACCNT_INFO_DB_ID = 1;
-	private JPanel itemPanel = null;
-	private JPanel depositPanel = null;
+	private SavTrackPanel itemPanel = null;
+	private SavTrackPanel depositPanel = null;
 	private JTabbedPane tabPane = null;
 	private CreateDepositSection depSection = null;
 	private DepositTable table = null;
@@ -78,9 +70,25 @@ public class SavingsTracker implements GuiComponent {
 	 * Create the application.
 	 */
 	public SavingsTracker(){
+		/*long tempId = 0;
+		System.out.println(Long.toString(tempId));
+		tempId = Long.parseLong(db.queryString("SELECT NUMDEP FROM DEPOSITSINFO WHERE ID=0", 1));
+		System.out.println(Long.toString(tempId));
+		tempId = Long.parseLong(db.queryString("SELECT ID FROM DEPOSITS", 1));
+		System.out.println(Long.toString(tempId));
+		tempId = Long.parseLong(db.queryString("SELECT ID FROM DEPOSITS", 1));
+		System.out.println(Long.toString(tempId));
+		tempId = Long.parseLong(db.queryString("SELECT ID FROM DEPOSITS", 1));
+		System.out.println(Long.toString(tempId));
+		tempId = Long.parseLong(db.queryString("SELECT ID FROM DEPOSITS", 1));
+		System.out.println(Long.toString(tempId));
+			*/	
 		numRefresh = 0;
 		initialize();
 		initializeInterface();
+		RefreshThread refreshThread = new RefreshThread(this);
+		refreshThread.start();
+		
 	}
 
 	/**
@@ -152,7 +160,7 @@ public class SavingsTracker implements GuiComponent {
 		depositPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		depSection = new CreateDepositSection(this);
-		table = new DepositTable();
+		table = new DepositTable(this, db);
 		
 		// create the layout of the pieces on this panel
         // then ask for the name of the deposit
@@ -181,8 +189,8 @@ public class SavingsTracker implements GuiComponent {
 	private void initializeInterface()
 	{
 		tabPane = new JTabbedPane();
-		itemPanel = new JPanel(new GridBagLayout());
-		depositPanel = new JPanel(new GridBagLayout()); 
+		itemPanel = new SavTrackPanel(new GridBagLayout());
+		depositPanel = new SavTrackPanel(new GridBagLayout()); 
 		
 		createTabs();
 		tabPane.addTab("Item List", itemPanel);
@@ -195,8 +203,6 @@ public class SavingsTracker implements GuiComponent {
 	public void refresh() {
 		double amountUsed = 0;
 		
-		debugLabel.setText("Refresh Occured " + numRefresh++);
-
 		for(ItemColumn column : itemColumns)
 		{
 			amountUsed += column.getAmount();
@@ -204,6 +210,7 @@ public class SavingsTracker implements GuiComponent {
 		}
 		ovrvwBar.setUsed(amountUsed);
 		ovrvwBar.refresh();
+		depSection.refresh();
 	}
 
 	public void addDeposit(String   depName,
@@ -214,6 +221,18 @@ public class SavingsTracker implements GuiComponent {
 						   String   nextOcc) 
 	{
 		table.addDeposit(depName, totDep, itemDep, numItems, duration, nextOcc);
+	}
+	
+	public void addToItems(double totalAdd, double[] items, int numItems)
+	{
+//		double valueUsed = 0;
+//		for(int i = 0; i < numItems; i++)
+//		{
+//			itemColumns[i].addToItem(items[i]);
+//			valueUsed += items[i];
+//		}
+		
+		ovrvwBar.addFunds(totalAdd);
 	}
 	
 }

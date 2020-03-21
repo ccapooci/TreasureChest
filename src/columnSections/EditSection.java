@@ -1,8 +1,7 @@
 package columnSections;
 
-import javax.swing.JPanel;
-
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
 import java.awt.event.MouseEvent;
@@ -12,7 +11,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
-public class EditSection extends JPanel implements MouseListener, GuiComponent{
+/*    EditSection
+ *    NOT USED and probably OBE. 
+ * 
+ */
+public class EditSection extends SavTrackPanel implements MouseListener, GuiComponent{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -523317939936562257L;
 	private JComboBox<String> columnTypeComboBox;
 	private JButton btnSetEditButton;
 	private SavingsTracker masterTracker;
@@ -21,6 +28,7 @@ public class EditSection extends JPanel implements MouseListener, GuiComponent{
 	 * Create the panel.
 	 */
 	public EditSection(String[] comboBoxItems, SavingsTracker savTrack) {
+		super(savTrack);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setSize(200, 150);
 

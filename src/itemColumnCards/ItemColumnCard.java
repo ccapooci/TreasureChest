@@ -1,20 +1,17 @@
 package itemColumnCards;
 
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.JPanel;
-
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public abstract class ItemColumnCard extends JPanel implements MouseListener, GuiComponent {
-	SavingsTracker masterTracker;
+public abstract class ItemColumnCard extends SavTrackPanel implements MouseListener, GuiComponent {
 	/**
 	 * Create the panel.
 	 */
 	public ItemColumnCard(SavingsTracker savTrack) {
-		masterTracker = savTrack;
+		super(savTrack);
 	}
 
 	public abstract String getItemName();
@@ -22,39 +19,10 @@ public abstract class ItemColumnCard extends JPanel implements MouseListener, Gu
 	public abstract double getIntAmount();
 	public abstract double getTotalAmount();
 	public abstract void saveData();
+	public abstract void addToItem(double value);
 
 	public void refresh()
 	{
 		return;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }

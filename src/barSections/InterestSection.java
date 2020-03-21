@@ -1,20 +1,22 @@
 package barSections;
 
-import javax.swing.JPanel;
-
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public class InterestSection extends JPanel implements GuiComponent, MouseListener{
+/*  Future Feature
+ *  Not used  
+ */
+public class InterestSection extends SavTrackPanel implements GuiComponent{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2214300330684510521L;
 	private JTextField txtEnterInterestRate;
 	private SavingsTracker masterTracker;
 	private JRadioButton[] buttons;
@@ -28,6 +30,8 @@ public class InterestSection extends JPanel implements GuiComponent, MouseListen
 	public InterestSection(SavingsTracker track,
 						   String         intType,
 						   double         intRate) {
+		super(track);
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		buttons = new JRadioButton[NUM_BUTTONS];
@@ -124,31 +128,4 @@ public class InterestSection extends JPanel implements GuiComponent, MouseListen
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
-	}
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

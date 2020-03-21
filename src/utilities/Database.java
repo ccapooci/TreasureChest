@@ -17,11 +17,11 @@ public class Database {
 		Statement sql = null;
 		ResultSet result = null;
 		try {
+			System.out.println("execute: " + query);
 			sql = conn.createStatement();
 			result = sql.executeQuery(query);
 			result.next();
 			
-			System.out.println("executed: " + query);
 		} catch (SQLException e) {
 			System.out.println("Query " + query + " failed.");
 			e.printStackTrace();
@@ -75,6 +75,15 @@ public class Database {
 		}
 		System.out.println("received: " + output);
 		return output;
+	}
+	
+	public ResultSet queryMult(String query)
+	{
+		ResultSet result = null;
+		// query the db to find which card should be showing
+		result = executeQuery(query);
+		
+		return result;
 	}
 	
 	public void query(String query)

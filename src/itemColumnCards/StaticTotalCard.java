@@ -1,9 +1,9 @@
 package itemColumnCards;
 
-import javax.swing.JPanel;
 import java.awt.GridLayout;
 import columnSections.DepositSection;
 import columnSections.Header;
+import parentClasses.SavTrackPanel;
 import utilities.Database;
 import windows.SavingsTracker;
 
@@ -31,7 +31,7 @@ public class StaticTotalCard extends ItemColumnCard {
 		initDep = Double.parseDouble(db.queryString("select value from staticcolumns where id=" + dbId, DEF_INDEX));
 		
 		// panel numbers lowest numbers are at the top
-		JPanel panel2 = new JPanel();
+		SavTrackPanel panel2 = new SavTrackPanel(savTrack);
 		header = new Header(savTrack, name);
 		depSection = new DepositSection(savTrack, initDep);
 		Dimension dim = new Dimension();
@@ -81,5 +81,11 @@ public class StaticTotalCard extends ItemColumnCard {
 		db.update("update staticcolumns set name='" + header.getItemName() + "' where id=" + dataIndex);
 		// update with the current item name
 		db.update("update staticcolumns set value=" + depSection.getAmount() + " where id=" + dataIndex);
+	}
+
+	@Override
+	public void addToItem(double value) {
+		// TODO Auto-generated method stub
+		depSection.addValue(value);
 	}
 }

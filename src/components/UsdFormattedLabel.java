@@ -1,43 +1,59 @@
 package components;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public class UsdFormattedLabel extends JPanel implements MouseListener {
-	private JLabel dollarValue;
-	private JLabel dollarSign;
-	private SavingsTracker masterTracker;
+/*   UsdFormattedLabel
+ *   A label that is formatted for the USD. Value is expected to be
+ *   a number.
+ */
+public class UsdFormattedLabel extends SavTrackPanel {
+	private JLabel dollarValue;   // Holds value
+	private JLabel dollarSign;    // Holds the dollar sign
+	private SavingsTracker masterTracker;  // the highest level component
 
-	/**
-	 * Create the panel.
+	/*   Constructor 
+	 *   Creates the components of this element. Then arranges them
+	 *   with the dollar sign to the left of the value.
 	 */
 	public UsdFormattedLabel(SavingsTracker savTracker) {
+		super(savTracker);
+		// save the tracker
 		masterTracker = savTracker;
 		
+		// add the dollar sign to the left
 		dollarSign = new JLabel();
 		dollarSign.setText("$");
 		add(dollarSign);
 		
 		// create the formatted text field
+		// add the text field to the right of the dollar sign
 		dollarValue = new JLabel();
 		dollarValue.setText("0.00");
 		add(dollarValue);
 	}
 	
+	/*   setValue
+	 *   Set the value in the label to argument pass to this function.
+	 *   	valueToSet: The new value held in the label.
+	 */
 	public void setValue(double valueToSet)
 	{
+		// get the decimal
 		double decimal = valueToSet - (long)(valueToSet);
-		double tenths = decimal - (long)decimal;
+		// get the hundredths value
+		double temp = 10*decimal;
+		double hundredth = temp - (long)temp;
+		
 		// see if there is decimal
 		// if not then put two zeros at the end
 		if(decimal == 0)
 		{
 			dollarValue.setText(Double.toString(valueToSet) + "0");
 		}
-		if(tenths == 0)
+		else if(hundredth == 0)
 		{
 			dollarValue.setText(Double.toString(valueToSet) + "0");
 		}
@@ -46,35 +62,4 @@ public class UsdFormattedLabel extends JPanel implements MouseListener {
 			dollarValue.setText(Double.toString(valueToSet));
 		}
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		masterTracker.refresh();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

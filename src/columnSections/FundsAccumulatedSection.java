@@ -1,18 +1,23 @@
 package columnSections;
 
-import javax.swing.JPanel;
-
 import components.UsdFormattedLabel;
 import interfaces.GuiComponent;
+import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
-public class FundsAccumulatedSection extends JPanel implements GuiComponent, MouseListener{
+/*   Currenlty Unused...
+ *   Future use is unknown.
+ */
+public class FundsAccumulatedSection extends SavTrackPanel implements GuiComponent{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private UsdFormattedLabel amountAddedLabel;
 	private double amountAdded;
 	private SavingsTracker masterTracker;
@@ -22,6 +27,7 @@ public class FundsAccumulatedSection extends JPanel implements GuiComponent, Mou
 	 */
 	public FundsAccumulatedSection(SavingsTracker savTrack,
 								   double         addInt) {
+		super(savTrack);
 		masterTracker = savTrack;
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
