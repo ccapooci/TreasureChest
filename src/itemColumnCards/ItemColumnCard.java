@@ -6,7 +6,7 @@ import interfaces.GuiComponent;
 import parentClasses.SavTrackPanel;
 import windows.SavingsTracker;
 
-public abstract class ItemColumnCard extends SavTrackPanel implements MouseListener, GuiComponent {
+public abstract class ItemColumnCard extends SavTrackPanel implements GuiComponent {
 	/**
 	 * Create the panel.
 	 */

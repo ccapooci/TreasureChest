@@ -39,7 +39,7 @@ public class Database {
 		{
             //Get a connection
 			Properties p = System.getProperties();
-			p.setProperty("derby.system.home", "C:\\derbyDb");
+			p.setProperty("derby.system.home", "C:\\derbyDbv0.0.1");
 			conn = DriverManager.getConnection(JBDC_URL);
 						
 			// this is how you check to make sure connection happened

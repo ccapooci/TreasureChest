@@ -24,7 +24,6 @@ public class SavingsTracker implements GuiComponent {
 	private static ItemColumn[] itemColumns;
 	private static OverviewBar ovrvwBar;
 	private static int numCols;
-	private int numRefresh;
 	private static Database db = null;
 	private final int ACCNT_INFO_DB_ID = 1;
 	private SavTrackPanel itemPanel = null;
@@ -83,7 +82,6 @@ public class SavingsTracker implements GuiComponent {
 		tempId = Long.parseLong(db.queryString("SELECT ID FROM DEPOSITS", 1));
 		System.out.println(Long.toString(tempId));
 			*/	
-		numRefresh = 0;
 		initialize();
 		initializeInterface();
 		RefreshThread refreshThread = new RefreshThread(this);

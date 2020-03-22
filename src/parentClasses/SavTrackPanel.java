@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import windows.SavingsTracker;
 
-public class SavTrackPanel extends JPanel implements MouseListener{
+public class SavTrackPanel extends JPanel {
 	SavingsTracker savsTrack = null;
 	
 	public SavTrackPanel(SavingsTracker savTrack) {
@@ -26,34 +26,5 @@ public class SavTrackPanel extends JPanel implements MouseListener{
 		super(gridBagLayout);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		savsTrack.refresh();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		savsTrack.refresh();
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		savsTrack.refresh();
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
