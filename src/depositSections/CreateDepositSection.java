@@ -15,6 +15,8 @@ import components.LabelUsdText;
 import components.UsdFormattedLabel;
 import components.UsdFormattedTextField;
 import parentClasses.SavTrackPanel;
+import tabs.CreateDepositTab;
+import tabs.DepositTableTab;
 import windows.SavingsTracker;
 
 public class CreateDepositSection extends SavTrackPanel {
@@ -31,10 +33,11 @@ public class CreateDepositSection extends SavTrackPanel {
 	private JButton add = null;
 	private String recurrOption[] = null;
 	private DateSelector dateSel = null;
+	private CreateDepositTab createDepTab = null;
 	/**
 	 * Create the panel.
 	 */
-	public CreateDepositSection(SavingsTracker savTrack) 
+	public CreateDepositSection(SavingsTracker savTrack, CreateDepositTab createDepositTab) 
 	{
 		super(savTrack);
 		// JLabels
@@ -45,6 +48,7 @@ public class CreateDepositSection extends SavTrackPanel {
 		JLabel leftover = new JLabel("Leftover");
 		JLabel nxtOcc = new JLabel("Next Occurrence");
 		dateSel = new DateSelector(savTrack);
+		this.createDepTab = createDepositTab;
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();  // layout of the column
 		GridBagConstraints gbc = new GridBagConstraints();  // constraints of the layout
@@ -238,7 +242,7 @@ public class CreateDepositSection extends SavTrackPanel {
             	}
             	else
             	{
-            		savingTrack.addDeposit(nameText.getText(),
+            		savTrack.addDeposit(nameText.getText(),
                 			totDepText.getValue(),
                 			itDeps,
                 			i,
