@@ -49,11 +49,8 @@ public class DepositTable extends SavTrackPanel {
 		String numDepStr = data.queryString("SELECT NUMDEP FROM DEPOSITSINFO WHERE ID=0", 1);
 		id = Long.parseLong(idVal);
 		numDep = Integer.parseInt(numDepStr);
-		CalendarDate today = null;
 		CalendarDate depDate = null;
 		ResultSet ids = null;
-		int missedDeps = 0;
-		double[] addDepositData = new double[6];
 		String newDate = null;
 		depTable = new JTable(model) {
 
@@ -86,12 +83,7 @@ public class DepositTable extends SavTrackPanel {
             }
         }; 
         // todo set the ID from data in the Database
-        //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-    	LocalDate localDate = LocalDate.now();
-    	today = new CalendarDate(getMonth(localDate.toString()),
-    							 getDay(localDate.toString()),
-    							 getYear(localDate.toString()));
-    	
+
         scroll = new JScrollPane(depTable);
 		depTable.setFillsViewportHeight(true);
 		delete = new JButton("Delete Deposit");		
@@ -155,26 +147,8 @@ public class DepositTable extends SavTrackPanel {
 				nxtDep = db.queryString("SELECT NEXTOCC FROM DEPOSITS WHERE ID="+tempId, 1);
 				occ = db.queryString("SELECT DURATION FROM DEPOSITS WHERE ID=" + tempId, 1);
 				
-				depDate = new CalendarDate(getMonth(nxtDep), getDay(nxtDep), getYear(nxtDep));
 				
-				missedDeps = today.howGreater(depDate, occ);
-				
-				if(missedDeps > 0)
-				{
-					int j = 0;
-					for(double val : itemVal)
-					{
-						addDepositData[j] = val * missedDeps;
-						j++;
-					}
-				
-					savTrack.addToItems(tempDep, addDepositData, 6);
-					depDate.add(missedDeps, occ);
-
-					newDate = (depDate.getMonth()+"-"+depDate.getDay()+"-"+depDate.getYear());
-
-					db.update("UPDATE DEPOSITS SET NEXTOCC=" + newDate +" WHERE ID=" + tempId);
-				}
+				newDate = adjustItems(nxtDep, itemVal, tempId);
 				Object[] row = {tempId, tempName, tempDep, itemVal[0],itemVal[1],itemVal[2],itemVal[3],itemVal[4],itemVal[5],newDate, false};
 				model.addRow(row);
 			}
@@ -258,4 +232,50 @@ public class DepositTable extends SavTrackPanel {
 		parts = date.split("-");
 		return Integer.parseInt(parts[2]);
 	}
+	
+	/*
+	 * Given the deposit date from the repository,
+	 * this function calculates the number of missed deposits
+	 * and adds them to the appropriate columns.
+	 * 
+	 * Returns the next deposit date.
+	 */
+	private String adjustItems(String nextDepositDate, double[] itemVal, long tempId)
+	{
+		CalendarDate today = null;
+    	CalendarDate depDate = null;
+		LocalDate localDate = LocalDate.now();
+		int missedDeps = 0;
+		double[] addDepositData = new double[6];
+		String newDate = nextDepositDate;
+		
+
+    	today = new CalendarDate(getMonth(localDate.toString()),
+    			                 getDay(localDate.toString()),
+				                 getYear(localDate.toString()));
+
+    	depDate = new CalendarDate(getMonth(nextDepositDate), getDay(nextDepositDate), getYear(nextDepositDate));
+    	
+		missedDeps = today.howGreater(depDate, occ);
+		
+		if(missedDeps > 0)
+		{
+			int j = 0;
+			for(double val : itemVal)
+			{
+				addDepositData[j] = val * missedDeps;
+				j++;
+			}
+		
+			this.savsTrack.addToItems(addDepositData, 6);
+			depDate.add(missedDeps, occ);
+
+			newDate = (depDate.getMonth()+"-"+depDate.getDay()+"-"+depDate.getYear());
+
+			db.update("UPDATE DEPOSITS SET NEXTOCC=" + newDate +" WHERE ID=" + tempId);
+		}
+
+		return newDate;
+	}
+	
 }

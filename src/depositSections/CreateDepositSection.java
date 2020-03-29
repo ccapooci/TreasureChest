@@ -238,7 +238,7 @@ public class CreateDepositSection extends SavTrackPanel {
             	
             	if(recurr.equals("One Time"))
             	{
-            		savingTrack.addToItems(totDepText.getValue(), itDeps, 6);
+            		savingTrack.addToItems(itDeps, 6);
             	}
             	else
             	{

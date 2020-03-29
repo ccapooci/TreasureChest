@@ -97,9 +97,14 @@ public class ItemTab extends SavTrackPanel
 		ovrvwBar.refresh();
 	}
 
-	public void addFunds(double totalAdd) {
+	public void addFunds(double[] itemDeps, int numItems) {
 		// TODO Auto-generated method stub
-		ovrvwBar.addFunds(totalAdd);
+		for(int i = 0; i < numItems; i++)
+		{
+			itemColumns[i].addToItem(itemDeps[i]);
+			ovrvwBar.addFunds(itemDeps[i]);
+		}
+		
 	}
 
 	

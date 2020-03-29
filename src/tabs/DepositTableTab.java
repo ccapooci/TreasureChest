@@ -41,7 +41,7 @@ public class DepositTableTab extends SavTrackPanel
         gbc.weighty = 0.5;
         this.add(table, gbc);
         
-        // need to add all of the 
+        // need to add all of the deposits from the database
 		
 	}
 

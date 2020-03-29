@@ -116,9 +116,9 @@ public class SavingsTracker implements GuiComponent {
 	}
 
 	
-	public void addToItems(double totalAdd, double[] items, int numItems)
+	public void addToItems(double[] items, int numItems)
 	{
-		itemTab.addFunds(totalAdd);
+		itemTab.addFunds(items,numItems);
 	}
 
 	public void addDeposit(String text, double value, double[] itDeps, int i, String selectedItem, String date) 
