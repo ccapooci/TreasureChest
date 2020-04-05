@@ -1,5 +1,6 @@
 package tabs;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -20,29 +21,18 @@ public class DepositTableTab extends SavTrackPanel
 	private static Database db = null;
 
 	public DepositTableTab(SavingsTracker savTrack, Database db) {
-		super(savTrack, new GridBagLayout());
+		super(savTrack);
 		this.db = db;
 		createDepositTableTab();
 	}
 	
 	private void createDepositTableTab()
 	{
-		GridBagConstraints gbc = new GridBagConstraints();
 		table = new DepositTable(this.savsTrack, db);
-		
-        // create the layout of the pieces on this panel
-        // then ask for the name of the deposit
-        gbc.gridheight = 1;
-        gbc.gridwidth = 5;
-        gbc.gridx = 7;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 1;
-        gbc.weighty = 0.5;
-        this.add(table, gbc);
+
+        this.add(table, BorderLayout.CENTER);
         
-        // need to add all of the deposits from the database
-		
+  		
 	}
 
 	public void addDeposit(String   depName,
@@ -55,7 +45,8 @@ public class DepositTableTab extends SavTrackPanel
       table.addDeposit(depName, totDep, itemDep, numItems, duration, nextOcc);
    }
 
-	public void refresh() {
+	public void refresh() 
+	{
 		// needs to go through all of the entries in the and 
 		// see if any of the dates have passed
 	}

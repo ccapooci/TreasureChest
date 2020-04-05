@@ -57,6 +57,7 @@ public class CalendarDate {
 		case "Monthly":
 		{
 			month = month + value;
+			
 			while(!checkDate(date, month, year))
 			{
 				date = date - 1;
@@ -204,7 +205,7 @@ public class CalendarDate {
 	private int howGreaterMonthly(CalendarDate depDate) {
 		int magnitude = 0;
 		
-		magnitude = (depDate.getMonth() + (12* (depDate.getYear() - year))) - month;
+		magnitude = (month + (12* (year - depDate.getYear()))) - depDate.getMonth();
 				
 		if(date >= depDate.getDay())
 		{
@@ -223,6 +224,7 @@ public class CalendarDate {
 		int weekly = 0;
 		weekly = howGreaterWeekly(depDate);
 				
+		// Get truncate the value 
 		return weekly/2;
 	}
 
@@ -230,6 +232,7 @@ public class CalendarDate {
 		int daily = 0;
 		daily = howGreaterDaily(depDate);
 				
+		// Get the number of weeks truncated
 		return (daily/7);
 	}
 
@@ -249,11 +252,11 @@ public class CalendarDate {
 			{
 				if(date >= depD)
 				{
-					greater = 0;
+					greater = 1;
 				}
 				else
 				{
-					greater = 1;
+					greater = 0;
 				}
 			}
 			else if(month < depM)
@@ -280,7 +283,7 @@ public class CalendarDate {
 			savedM = month;
 			savedY = year;
 			
-			while(savedD != depD && savedY != depY && savedM != depM)
+			while(date != depD || year != depY || month != depM)
 			{
 				greater++;
 				subOneDay();

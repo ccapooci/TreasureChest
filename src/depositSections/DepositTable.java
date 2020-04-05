@@ -1,5 +1,6 @@
 package depositSections;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -41,6 +43,7 @@ public class DepositTable extends SavTrackPanel {
 						Database data) {
 		super(savTrack);
 		
+		JPanel scrollPanel = new JPanel();
 		int numDeps =0;
 		GridBagConstraints gbc = new GridBagConstraints();
 		db = data;
@@ -83,10 +86,10 @@ public class DepositTable extends SavTrackPanel {
             }
         }; 
         // todo set the ID from data in the Database
-
+        depTable.setFillsViewportHeight(true);
         scroll = new JScrollPane(depTable);
-		depTable.setFillsViewportHeight(true);
-		delete = new JButton("Delete Deposit");		
+		delete = new JButton("Delete Deposit");	
+		
 		
 		model.addColumn("ID");
 		model.addColumn("Deposit Name");
@@ -155,6 +158,7 @@ public class DepositTable extends SavTrackPanel {
 		}		
 //		/GridBagLayout gbl = new GridBagLayout();
 		
+		
 		setLayout(new GridBagLayout());
 		
 		gbc.gridheight = 1;
@@ -162,7 +166,7 @@ public class DepositTable extends SavTrackPanel {
 	    gbc.gridy = 0;
 	    gbc.fill = GridBagConstraints.BOTH;//GridBagConstraints.HORIZONTAL;
 	    gbc.weightx = 0.5;
-	    gbc.weighty = 0.5;
+	    gbc.weighty = 0.9;
 		add(scroll, gbc);
 		
 		gbc.gridheight = 1;
@@ -170,7 +174,7 @@ public class DepositTable extends SavTrackPanel {
 	    gbc.gridy = 1;
 	    gbc.fill = GridBagConstraints.NONE;//GridBagConstraints.HORIZONTAL;
 	    gbc.weightx = 0.5;
-	    gbc.weighty = 0.5;
+	    gbc.weighty = 0.1;
 	    add(delete, gbc);
 	    
 	    
@@ -212,27 +216,48 @@ public class DepositTable extends SavTrackPanel {
 		db.update("UPDATE DEPOSITSINFO SET NUMDEP=" + numDep);
 	}
 	
-	private int getMonth(String date)
-	{
-		String[] parts;
-		parts = date.split("-");
-		return Integer.parseInt(parts[0]);
-	}
-	
-	private int getDay(String date)
+	private int getLocalDateMonth(String date)
 	{
 		String[] parts;
 		parts = date.split("-");
 		return Integer.parseInt(parts[1]);
 	}
 	
-	private int getYear(String date)
+	private int getLocalDateDay(String date)
 	{
 		String[] parts;
 		parts = date.split("-");
 		return Integer.parseInt(parts[2]);
 	}
 	
+	private int getLocalDateYear(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[0]);
+	}
+
+	private int getCalendarDateMonth(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[0]);
+	}
+	
+	private int getCalendarDateDay(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[1]);
+	}
+	
+	private int getCalendarDateYear(String date)
+	{
+		String[] parts;
+		parts = date.split("-");
+		return Integer.parseInt(parts[2]);
+	}
+
 	/*
 	 * Given the deposit date from the repository,
 	 * this function calculates the number of missed deposits
@@ -250,11 +275,13 @@ public class DepositTable extends SavTrackPanel {
 		String newDate = nextDepositDate;
 		
 
-    	today = new CalendarDate(getMonth(localDate.toString()),
-    			                 getDay(localDate.toString()),
-				                 getYear(localDate.toString()));
+    	today = new CalendarDate(getLocalDateMonth(localDate.toString()),
+    			                 getLocalDateDay(localDate.toString()),
+				                 getLocalDateYear(localDate.toString()));
 
-    	depDate = new CalendarDate(getMonth(nextDepositDate), getDay(nextDepositDate), getYear(nextDepositDate));
+    	depDate = new CalendarDate(getCalendarDateMonth(nextDepositDate),
+    							   getCalendarDateDay(nextDepositDate), 
+    							   getCalendarDateYear(nextDepositDate));
     	
 		missedDeps = today.howGreater(depDate, occ);
 		
@@ -268,11 +295,12 @@ public class DepositTable extends SavTrackPanel {
 			}
 		
 			this.savsTrack.addToItems(addDepositData, 6);
+			// Plus one because we want to go to the next deposit.
 			depDate.add(missedDeps, occ);
 
-			newDate = (depDate.getMonth()+"-"+depDate.getDay()+"-"+depDate.getYear());
+			newDate = depDate.getString();
 
-			db.update("UPDATE DEPOSITS SET NEXTOCC=" + newDate +" WHERE ID=" + tempId);
+			db.update("UPDATE DEPOSITS SET NEXTOCC='" + newDate +"' WHERE ID=" + tempId);
 		}
 
 		return newDate;
