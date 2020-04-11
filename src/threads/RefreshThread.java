@@ -17,7 +17,7 @@ public class RefreshThread extends Thread {
 		{
 			this.savingsTracker.refresh();
 			try {
-				Thread.sleep(1);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -159,4 +159,12 @@ public class PercentageItemColumn extends ItemColumn implements ItemListener {
 		itemLayouts[currentItem].addToItem(value);
 	}
 	
+	public void refresh()
+	{
+		for (ItemColumnCard item : itemLayouts)
+		{
+			item.refresh();
+		}
+	}
+	
 }

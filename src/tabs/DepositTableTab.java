@@ -21,16 +21,27 @@ public class DepositTableTab extends SavTrackPanel
 	private static Database db = null;
 
 	public DepositTableTab(SavingsTracker savTrack, Database db) {
-		super(savTrack);
+		super(savTrack, new GridBagLayout());
 		this.db = db;
 		createDepositTableTab();
 	}
 	
 	private void createDepositTableTab()
 	{
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		
 		table = new DepositTable(this.savsTrack, db);
 
-        this.add(table, BorderLayout.CENTER);
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.fill = GridBagConstraints.BOTH;//GridBagConstraints.HORIZONTAL;
+	    gbc.weightx = 1;
+	    gbc.weighty = 1;
+		
+        this.add(table, gbc);
         
   		
 	}

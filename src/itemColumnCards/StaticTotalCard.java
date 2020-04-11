@@ -88,4 +88,9 @@ public class StaticTotalCard extends ItemColumnCard {
 		// TODO Auto-generated method stub
 		depSection.addValue(value);
 	}
+	
+	public void refresh()
+	{
+		depSection.refresh();
+	}
 }

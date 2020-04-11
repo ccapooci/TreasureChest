@@ -56,13 +56,13 @@ public class CalendarDate {
 		}
 		case "Monthly":
 		{
-			month = month + value;
-			
-			while(!checkDate(date, month, year))
-			{
-				date = date - 1;
-			}
-			break;
+//			month = month + value;
+//			
+//			while(!checkDate(date, month, year))
+//			{
+//				date = date - 1;
+//			}
+//			break;
 		}
 		}
 	}

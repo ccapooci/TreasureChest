@@ -1,6 +1,7 @@
 package depositSections;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -41,9 +42,8 @@ public class DepositTable extends SavTrackPanel {
 	 */
 	public DepositTable(SavingsTracker savTrack,
 						Database data) {
-		super(savTrack);
+		super(savTrack, new GridBagLayout());
 		
-		JPanel scrollPanel = new JPanel();
 		int numDeps =0;
 		GridBagConstraints gbc = new GridBagConstraints();
 		db = data;
@@ -55,7 +55,9 @@ public class DepositTable extends SavTrackPanel {
 		CalendarDate depDate = null;
 		ResultSet ids = null;
 		String newDate = null;
+		
 		depTable = new JTable(model) {
+			
 
             private static final long serialVersionUID = 1L;
 
@@ -85,12 +87,14 @@ public class DepositTable extends SavTrackPanel {
                 }
             }
         }; 
-        // todo set the ID from data in the Database
         depTable.setFillsViewportHeight(true);
+                
         scroll = new JScrollPane(depTable);
-		delete = new JButton("Delete Deposit");	
-		
-		
+        scroll.setSize(800, 400);
+        
+        delete = new JButton("Delete Deposit");	
+        delete.setSize(50, 10);
+			
 		model.addColumn("ID");
 		model.addColumn("Deposit Name");
 		model.addColumn("Total Deposit");
@@ -102,6 +106,7 @@ public class DepositTable extends SavTrackPanel {
 		model.addColumn("Item 6");
 		model.addColumn("Next Deposit");
 		model.addColumn("Delete?");
+		
 		
 		depTable.removeColumn(depTable.getColumn("ID"));
 		numDeps = Integer.parseInt(db.queryString("SELECT NUMDEP FROM DEPOSITSINFO", 1));
@@ -156,25 +161,26 @@ public class DepositTable extends SavTrackPanel {
 				model.addRow(row);
 			}
 		}		
-//		/GridBagLayout gbl = new GridBagLayout();
 		
+
 		
-		setLayout(new GridBagLayout());
-		
-		gbc.gridheight = 1;
+		gbc.gridheight = 2;
+		gbc.gridwidth = 5;
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
 	    gbc.fill = GridBagConstraints.BOTH;//GridBagConstraints.HORIZONTAL;
-	    gbc.weightx = 0.5;
-	    gbc.weighty = 0.9;
+	    gbc.weightx = 1;
+	    gbc.weighty = 1;
+	    gbc.anchor = GridBagConstraints.CENTER;
 		add(scroll, gbc);
 		
 		gbc.gridheight = 1;
-	    gbc.gridx = 0;
-	    gbc.gridy = 1;
+		gbc.gridwidth = 1;
+	    gbc.gridx = 1;
+	    gbc.gridy = 2;
 	    gbc.fill = GridBagConstraints.NONE;//GridBagConstraints.HORIZONTAL;
-	    gbc.weightx = 0.5;
-	    gbc.weighty = 0.1;
+	    gbc.weightx = 1;
+	    gbc.weighty = 1;
 	    add(delete, gbc);
 	    
 	    

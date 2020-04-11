@@ -2,6 +2,9 @@ package components;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
 import javax.swing.JTextField;
 
 import parentClasses.SavTrackPanel;
@@ -11,11 +14,12 @@ import javax.swing.JLabel;
 /*   UsdFormattedTextField
  * 	 TextField formatted for the USD.
  */
-public class UsdFormattedTextField extends SavTrackPanel{
+public class UsdFormattedTextField extends SavTrackPanel {
 	private JTextField textField; // the text field that holds the usd value
 	private JLabel dollarSign;    // a dollar positioned next to the value
 	private SavingsTracker masterTracker; // highest level component
-
+	private boolean focused = false;
+	
 	/*  Constructor
 	 *  Creates the components in the UsdFormattedTextField and 
 	 *  arranges them.  Puts the dollar sign to the left of the
@@ -55,6 +59,21 @@ public class UsdFormattedTextField extends SavTrackPanel{
         textField.setText("0.00");
 		add(textField, gbc);
 		textField.setColumns(25);
+		textField.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				focused = true;
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				// TODO Auto-generated method stub
+				focused = false;
+			}
+			
+		});
 
 	}
 	
@@ -97,17 +116,28 @@ public class UsdFormattedTextField extends SavTrackPanel{
 				valueNoCommas = valueNoCommas + val;
 			}
 			
-			try
+			if(!valueNoCommas.equals(""))
 			{
-				amountReturn = Double.parseDouble(valueNoCommas);
-			}
-			catch(Exception e)
-			{
-				System.out.println("Could not parse " + valueNoCommas);
-				amountReturn = 0;
+				try
+				{
+					amountReturn = Double.parseDouble(valueNoCommas);
+				}
+				catch(Exception e)
+				{
+					System.out.println("Could not parse " + valueNoCommas);
+					amountReturn = 0;
+				}
 			}
 		}
 		
 		return amountReturn;
+	}
+	
+	public void refresh()
+	{
+		if (!focused)
+		{
+			set(getValue());
+		}
 	}
 }

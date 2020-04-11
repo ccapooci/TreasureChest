@@ -11,7 +11,7 @@ import windows.SavingsTracker;
  *   Holds the information that is located at the top of the
  *   item columns such as the name.
  */
-public class Header extends SavTrackPanel implements GuiComponent {
+public class Header extends SavTrackPanel {
 	/**
 	 * 
 	 */
@@ -27,15 +27,8 @@ public class Header extends SavTrackPanel implements GuiComponent {
 				  String         name) {
 		super(savTrack);
 		
-		// labels the item columns as Items
-		JLabel lblItem = new JLabel("Item");
-
 		// set the layout
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		// alignment the label
-		lblItem.setAlignmentX(CENTER_ALIGNMENT);
-		add(lblItem);
 		
 		// add the text field and set the passed name
 		textField = new JTextField();
@@ -53,10 +46,4 @@ public class Header extends SavTrackPanel implements GuiComponent {
 		return textField.getText();
 	}
 	
-	/*   refresh
-	 *   Ensure the UI is updated to the most current values
-	 */
-	public void refresh() {
-		// TODO
-	}
 }

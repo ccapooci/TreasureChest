@@ -80,6 +80,6 @@ public class DepositSection extends SavTrackPanel implements GuiComponent{
 	 */
 	public void refresh()
 	{
-		
+		txtDeposit.refresh();
 	}
 }

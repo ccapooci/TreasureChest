@@ -57,12 +57,12 @@ public class CreateDepositSection extends SavTrackPanel {
 		nameText = new JTextField();
 		
 		// Combo boxes / drop down box
-		recurrOption = new String[5];
+		recurrOption = new String[4];
 		recurrOption[0] = "One Time";
 		recurrOption[1] = "Daily";
 		recurrOption[2] = "Weekly";
 		recurrOption[3] = "Biweekly"; 
-		recurrOption[4] = "Monthly";		
+//		recurrOption[4] = "Monthly";		
 		recurrence = new JComboBox<String>(recurrOption); 
 		
 		savingTrack = savTrack;
