@@ -270,10 +270,12 @@ public class CreateDepositSection extends SavTrackPanel {
 
 	public void refresh()
 	{
-		double leftover = totDepText.getValue();
-
+		double leftover = 0;
+		totDepText.refresh();
+		leftover = totDepText.getValue();
 		for(LabelUsdText item : items)
 		{
+			item.refresh();
 			leftover -= item.getValue();
 		}
 		

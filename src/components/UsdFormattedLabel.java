@@ -41,25 +41,28 @@ public class UsdFormattedLabel extends SavTrackPanel {
 	 */
 	public void setValue(double valueToSet)
 	{
-		// get the decimal
-		double decimal = valueToSet - (long)(valueToSet);
-		// get the hundredths value
-		double temp = 10*decimal;
-		double hundredth = temp - (long)temp;
+		String valStr = Double.toString(valueToSet);
 		
-		// see if there is decimal
-		// if not then put two zeros at the end
-		if(decimal == 0)
+		if(!valStr.contains("."))
 		{
-			dollarValue.setText(Double.toString(valueToSet) + "0");
-		}
-		else if(hundredth == 0)
-		{
-			dollarValue.setText(Double.toString(valueToSet) + "0");
+			valStr = valStr + ".00";
 		}
 		else
 		{
-			dollarValue.setText(Double.toString(valueToSet));
+			String[] splits = null;
+			splits = valStr.split("\\.");
+			
+			if(splits[1].length() == 1)
+			{
+				valStr = valStr + "0";
+			}
+			else 
+			{
+				valStr = splits[0] + '.' + splits[1].substring(0, 2);
+			}
+			
 		}
+		
+		dollarValue.setText(valStr);
 	}
 }

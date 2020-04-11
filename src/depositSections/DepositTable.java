@@ -90,7 +90,6 @@ public class DepositTable extends SavTrackPanel {
         depTable.setFillsViewportHeight(true);
                 
         scroll = new JScrollPane(depTable);
-        scroll.setSize(800, 400);
         
         delete = new JButton("Delete Deposit");	
         delete.setSize(50, 10);
@@ -170,7 +169,11 @@ public class DepositTable extends SavTrackPanel {
 	    gbc.gridy = 0;
 	    gbc.fill = GridBagConstraints.BOTH;//GridBagConstraints.HORIZONTAL;
 	    gbc.weightx = 1;
-	    gbc.weighty = 1;
+	    gbc.weighty = 0.8;
+	    gbc.insets.bottom = 10;
+	    gbc.insets.left   = 10;
+	    gbc.insets.right  = 10;
+	    gbc.insets.top    = 10;
 	    gbc.anchor = GridBagConstraints.CENTER;
 		add(scroll, gbc);
 		

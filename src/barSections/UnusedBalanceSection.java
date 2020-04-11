@@ -41,6 +41,7 @@ public class UnusedBalanceSection extends SavTrackPanel implements GuiComponent 
 		
 		// create the label and set the unused value
 		unusedAccountBalance = new UsdFormattedLabel(tracker);
+		unusedAccountBalance.setSize(50, 10);
 		unusedAccountBalance.setValue(unusedBalance);
 		add(unusedAccountBalance);
 		

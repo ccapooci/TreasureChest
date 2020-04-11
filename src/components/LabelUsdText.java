@@ -74,4 +74,9 @@ public class LabelUsdText extends SavTrackPanel {
 	{
 		return text.getValue();
 	}
+	
+	public void refresh()
+	{
+		text.refresh();
+	}
 }

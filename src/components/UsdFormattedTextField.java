@@ -79,24 +79,38 @@ public class UsdFormattedTextField extends SavTrackPanel {
 	
 	public void set(double totalValue)
 	{
-		String valStr = Double.toString(totalValue);
+	
+		if (totalValue >= 0)
+		{
+			String valStr = Double.toString(totalValue);
 		
-		if(!valStr.contains("."))
-		{
-			valStr = valStr + ".00";
-		}
-		else
-		{
-			String[] splits = null;
-			splits = valStr.split("\\.");
-			
-			if(splits[1].length() == 1)
+			if(!valStr.contains("."))
 			{
-				valStr = valStr + "0";
+				valStr = valStr + ".00";
 			}
-		}
+			else
+			{
+				String[] splits = null;
+				splits = valStr.split("\\.");
+			
+				if(splits[1].length() == 1)
+				{
+					valStr = valStr + "0";
+				}
+				else 
+				{
+					valStr = splits[0] + '.' + splits[1].substring(0, 2);
+				}
+			
+			}
 		
-		textField.setText(valStr);
+			textField.setText(valStr);
+		}
+		else 
+		{
+			textField.setText("0.00");
+		}
+
 	}
 	
 	public double getValue()

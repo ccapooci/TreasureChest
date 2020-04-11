@@ -62,5 +62,6 @@ public class TotalAccountBalanceSection extends SavTrackPanel implements GuiComp
 	 *   Refreshes the value in the account balance text field 
 	 */
 	public void refresh() {
+		txtTotalAccountBalance.refresh();
 	}
 }
